@@ -1,35 +1,11 @@
+from flask import Flask, render_template, request
 import ast
 import traceback
 
-
-# Main function to handle user input and provide feedback
-def rubber_duck():
-    print("Welcome to Rubber Duck AI! Enter your code below, and I'll help you debug.")
-    while True:
-        print("\nType 'exit' to quit.")
-        user_code = input("\nPlease enter your code snippet:\n")
-
-        if user_code.strip().lower() == "exit":
-            print("Goodbye!")
-            break
-
-        # Provide feedback
-        syntax_feedback = check_syntax(user_code)
-        lint_feedback = lint_code(user_code)
-        runtime_feedback = check_runtime(user_code)
-
-        print("\n--- Feedback ---")
-        print("Syntax Check:")
-        print(syntax_feedback)
-
-        print("\nLint Check:")
-        print(lint_feedback)
-
-        print("\nRuntime Feedback:")
-        print(runtime_feedback)
+app = Flask(__name__)
 
 
-# Function to check for syntax errors
+# Helper functions for code analysis
 def check_syntax(code):
     try:
         ast.parse(code)
@@ -38,12 +14,10 @@ def check_syntax(code):
         return f"Syntax Error at line {e.lineno}: {e.msg}"
 
 
-# Function to provide basic linting (catching potential issues or style suggestions)
 def lint_code(code):
     suggestions = []
     lines = code.splitlines()
 
-    # Check for common linting issues
     for i, line in enumerate(lines, start=1):
         if len(line) > 79:
             suggestions.append(f"Line {i}: Exceeds 79 characters.")
@@ -55,15 +29,31 @@ def lint_code(code):
     return "\n".join(suggestions) if suggestions else "No linting issues detected."
 
 
-# Function to check runtime errors by running the code in a safe environment
 def check_runtime(code):
     try:
-        # Allow only safe built-ins, like print
         exec(code, {'__builtins__': {'print': print}})
         return "No runtime errors detected."
     except Exception as e:
         return f"Runtime error: {traceback.format_exc()}"
 
-# Run the rubber duck assistant
+
+# Flask route for the homepage
+@app.route("/", methods=["GET", "POST"])
+def indexPython():
+    feedback = {
+        "syntax": "",
+        "lint": "",
+        "runtime": ""
+    }
+    code = ""
+    if request.method == "POST":
+        code = request.form["code"]
+        feedback["syntax"] = check_syntax(code)
+        feedback["lint"] = lint_code(code)
+        feedback["runtime"] = check_runtime(code)
+
+    return render_template("indexPython.html", feedback=feedback, code=code)
+
+
 if __name__ == "__main__":
-    rubber_duck()
+    app.run(debug=True)
