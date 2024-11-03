@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Overlay</title>
+    <style>
+         body{
+            background-image: url('static/images/Galaxy2.png');
+        }
+        .container {
+            position: relative;
+            width: 50%; /* Adjusted to make the container smaller */
+            margin: auto;
+            display: flex;
+            justify-content: center; /* Center the content horizontally */
+        }
+        .image1 {
+            display: block;
+            width: 50%; /* Make the image half the width of the text box */
+            height: 50%; /* Make the image half the height of the text box */
+        }
+        .text-box {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            box-sizing: border-box;
+            border: 1px solid #000;
+            margin-left: 10px;
+        }
+        .textbox-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .textbox {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .answer-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full height to center vertically as well */
+        }
+
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <img src="static/Astronaut.jpg" alt="Image 1" class="image1">
+        <div class="text-box" id="outputValuepython app.py">
+            <h1>{{ generated_string }}</h1>
+        </div>
+    </div>
+     <div class="textbox-container">
+        <form id="inputForm" method="POST" action="/submit">
+            <textarea class="textbox" name="textbox" rows="4" placeholder="Enter your text here..."></textarea>
+            <br>
+            <button type="submit" class="button" onclick="showButton()">Answer</button>
+        </form>
+    </div>
+    <div class="answer-container" id="answerContainer">
+        <h3>{{ InformUser }}</h3>
+
+     </div>
+
+        <div class="center">
+        <button id="secondButton" onclick="window.location.href='/newpage2'">New Question</button>
+        </div>
+
+
+
+<script>
+
+</script>
+</body>
+</html>
+
+
+

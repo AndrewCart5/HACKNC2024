@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Background Image Example</title>
+    <script>
+
+
+
+    </script>
+    <style>
+
+        body {
+            background-image: url('static/images/Galaxy.jpg');
+            margin: 0;
+            height: 100vh;
+            background-image: url('../static/maxresdefault.jpg'); /* Replace with your image path */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white; /* Text color */
+        }
+
+        .textbox {
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: rgba(255, 0, 0, 0.8); /* Semi-transparent red */
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: rgba(255, 0, 0, 1); /* Fully opaque on hover */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="textbox">
+        <h3>Reach {{ value }} by answering 10 questions Correctly about {{ ProgrammingLanguage }}!</h3>
+    </div>
+
+    <form action="/newpage2" method="get">
+        <button type="submit">Click To Play</button>
+    </form>
+
+</body>
+</html>

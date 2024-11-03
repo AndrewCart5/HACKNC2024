@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Overlay</title>
+    <style>
+        body{
+            /*background-image: url('static/images/Galaxy2.png');*/
+        }
+        .container {
+            position: relative;
+            width: 80%; /* Adjusted to make the container smaller */
+            margin: auto;
+            display: flex;
+            justify-content: center; /* Center the content horizontally */
+            align-items: center; /* Align items vertically */
+        }
+        .image1 {
+            display: block;
+            object-fit: cover; /* Ensures the image maintains its aspect ratio */
+            max-width:500px;
+            max-height:500px;
+        }
+        .text-box {
+            width: 800px; /* Full width */
+            height: 400px;
+            padding: 10px;
+            font-size: 16px;
+            box-sizing: border-box;
+            border: 1px solid #000;
+            margin-left: 10px;
+
+
+        }
+        .textbox-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            justify-content: center; /* Center horizontally */
+
+        }
+        .textbox {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button{
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: rgba(255, 0, 0, 0.8); /* Semi-transparent red */
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .answer-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full height to center vertically as well */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="{{ url_for('static', filename='images/Astronaut.jpg') }}" alt="Image 1" class="image1" id="dynamicImage">
+        <div class="text-box" id="outputValuepython app.py">
+            <!-- <h3>{{ generated_string }}</h3> -->
+        </div>
+    </div>
+    <div class="textbox-container">
+        <form id="inputForm" method="POST" action="/submit">
+            <textarea class="textbox" name="textbox" rows="4" placeholder="Enter your text here..."></textarea>
+            <br>
+            <button type="submit" class="button" onclick="showButton()">Answer</button>
+        </form>
+    </div>
+    <div class="answer-container" id="answerContainer">
+        <h3>{{ InformUser }}</h3>
+    </div>
+    <div class="center">
+        <button id="secondButton" onclick="window.location.href='/newpage2'">New Question</button>
+    </div>
+
+    <script>
+        document.getElementById('outputValuepython app.py').innerHTML = `{{ html_content|safe }}`;
+        window.onload = function() {
+            var targetElement = document.getElementById('outputValuepython app.py');
+            var imageElement = document.getElementById('dynamicImage');
+            var targetHeight = targetElement.offsetHeight;
+            imageElement.style.height = targetHeight + 'px';
+            imageElement.style.width = targetHeight + 'px';
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Congratulations Page</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .buttons button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Congratulations! Made it to final destination</h1>
+    <img src="{{ url_for('static', filename='images/floating.jpg') }}" alt="Celebration Image" width="300">
+    <div class="buttons">
+        <form action="/" >
+        <button type="submit">Home</button>
+        </form>
+        <form action="/newpage2" method="get">
+        <button type="submit">Restart Game</button>
+    </form>
+    </div>
+</body>
+</html>

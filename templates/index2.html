@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Background Image Example</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background-image: url('static/images/maxresdefault.jpg');
+
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        h1 {
+    text-align: center;
+    color: Red; /* or any contrasting color */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* subtle shadow */
+    background-color: rgba(0, 0, 0, 0.5); /* semi-transparent background */
+    padding: 10px; /* some spacing around the text */
+}
+
+         table {
+            width: 100%;
+            border-collapse: collapse; /* Merge borders */
+        }
+        th, td {
+            border: 1px solid #ddd; /* Light border */
+            padding: 10px; /* Padding inside cells */
+            text-align: center; /* Center content */
+        }
+        img {
+            width: 200px; /* Set a fixed width */
+            height: 200px; /* Set a fixed height */
+            object-fit: cover; /* Crop images to fit the dimensions */
+        }
+    </style>
+</head>
+<body>
+
+<h1>Choose a language to learn!</h1>
+<table>
+    <tr>
+        <td>
+            <div>
+                <h1>Java</h1>
+                <a href="{{ url_for('set_value', value='Moon') }}"> <img src= "{{ url_for('static', filename='images/FullMoon2010.jpg') }}" alt="Example Image"  alt="Description of image 1"></a>
+            </div>
+        </td>
+        <td>
+            <div>
+                <h1>Python</h1>
+               <a href="{{ url_for('set_value', value='Earth') }}">  <img src="{{ url_for('static', filename='images/R.jpg') }}" alt="Example Image"  alt="Description of image 2"></a>
+            </div>
+        </td>
+        <td>
+            <div>
+                <h1>JavaScript</h1>
+               <a href="{{ url_for('set_value', value='Saturn') }}"> <img src="{{ url_for('static', filename='images/Saturn.jpg') }}" alt="Example Image" alt="Description of image 3"></a>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div>
+                <h1>C#</h1>
+                <a href="{{ url_for('set_value', value='Mars') }}"> <img src="{{ url_for('static', filename='images/Planet.jpg') }}" alt="Example Image" alt="Description of image 4"></a>
+            </div>
+        </td>
+        <td>
+            <div>
+                <h1>C++</h1>
+                <a href="{{ url_for('set_value', value='Neptune') }}"><img src="{{ url_for('static', filename='images/Planet2.jpg') }}" alt="Example Image" alt="Description of image 5"></a>
+            </div>
+        </td>
+        <td>
+            <div>
+                <h1>HTML</h1>
+                <a href="{{ url_for('set_value', value='Pluto') }}"> <img src="{{ url_for('static', filename='images/pluto.png') }}" alt="Example Image" alt="Description of image 6"></a>
+            </div>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
