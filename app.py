@@ -4,6 +4,7 @@ import traceback
 import ast
 import subprocess
 from bs4 import BeautifulSoup
+import google.generativeai as genai
 
 app = Flask(__name__)
 
@@ -183,6 +184,7 @@ def index(language="python"):
                 feedback["runtime"] = check_runtime_javascript(code)
 
     return render_template("index.html", feedback=feedback, code=code, language=language)
+    
 
 
 if __name__ == "__main__":
