@@ -8,8 +8,14 @@ from matplotlib.animation import FuncAnimation
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import os
 
+#scene = trimesh.load('C:\\Users\\ncroc\\Downloads\\cartoony_rubber_ducky.glb')
 # Load the GLB file dynamically. Sounds Russian.
-file_path = os.path.join("models", "Duck.glb")
+current_dir = os.path.dirname(__file__)
+
+file_path = os.path.join(current_dir, "Duck.glb")  # First, try assuming it's in the same directory as the script
+if not os.path.isfile(file_path):  # If not found, assume it's in a "models" folder
+    file_path = os.path.join(current_dir, "models", "Duck.glb")
+
 scene = trimesh.load(file_path)
 
 # Check if the scene is loaded properly. If not, cuss loudly and try again.
@@ -22,16 +28,17 @@ vertices = mesh.vertices
 faces = mesh.faces
 
 # Set the initial angles and motion parameters. Gots to follow da rule fool.
-INITIAL_ANGLES_DEGREES = (0, 0, 0)  # Object starts facing forward. Attention!
+INITIAL_ANGLES_DEGREES = (90, 0, 0)  # Object starts facing forward. Attention!
 SIDE_TO_SIDE_MAX_ANGLE = 60  # Degrees to rotate left and right. Political Science?
 NODDING_MAX_ANGLE = 20  # Degrees for nodding motion: PhD or something.
-FRAMES_PER_DIRECTION = 30  # Animation smoothness that would shame some low budget toons from the 80's
+FRAMES_PER_DIRECTION = 15
+# Animation smoothness that would shame some low budget toons from the 80's
 TOTAL_FRAMES = FRAMES_PER_DIRECTION * 4  # Total frames to do the shoulder lean
 
 # Size adjustment percentages for each axis. They're a bit insecure about that.
-scale_x = 0.25  # Scale down to 25% of original width
-scale_y = 0.25  # Scale down to 25% of original height
-scale_z = 0.25  # Scale down to 25% of original depth
+scale_x = 0.01  # Scale down to 25% of original width
+scale_y = 0.01  # Scale down to 25% of original height
+scale_z = 0.01  # Scale down to 25% of original depth
 
 # Function to create rotation matrices. Spin little ducky
 def rotation_matrix_degrees(angles):
