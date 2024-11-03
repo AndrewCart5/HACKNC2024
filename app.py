@@ -81,10 +81,12 @@ def set_value(value):
         ProgrammingLanguage = "JavaScript"
     else:
         ProgrammingLanguage = "HTML"
-
-
-
     return render_template('Prompt.html', value=Planet, ProgrammingLanguage=ProgrammingLanguage)
+    
+
+
+
+    
 
 
 
