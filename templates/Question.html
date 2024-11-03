@@ -6,8 +6,9 @@
     <title>Image Overlay</title>
     <style>
         body{
-            /*background-image: url('static/images/Galaxy2.png');*/
+            display:none;
         }
+
         .container {
             position: relative;
             width: 80%; /* Adjusted to make the container smaller */
@@ -16,6 +17,8 @@
             justify-content: center; /* Center the content horizontally */
             align-items: center; /* Align items vertically */
         }
+
+
         .image1 {
             display: block;
             object-fit: cover; /* Ensures the image maintains its aspect ratio */
@@ -69,38 +72,49 @@
             align-items: center;
             height: 100vh; /* Full height to center vertically as well */
         }
+
     </style>
+
 </head>
 <body>
     <div class="container">
         <img src="{{ url_for('static', filename='images/Astronaut.jpg') }}" alt="Image 1" class="image1" id="dynamicImage">
         <div class="text-box" id="outputValuepython app.py">
-            <!-- <h3>{{ generated_string }}</h3> -->
+
         </div>
     </div>
     <div class="textbox-container">
-        <form id="inputForm" method="POST" action="/submit">
+        <form id="inputForm" method="POST" action="/submit" onSubmit="return hideElements()">
             <textarea class="textbox" name="textbox" rows="4" placeholder="Enter your text here..."></textarea>
             <br>
-            <button type="submit" class="button" onclick="showButton()">Answer</button>
+            <button type="submit" class="button" >Answer</button>
         </form>
     </div>
     <div class="answer-container" id="answerContainer">
         <h3>{{ InformUser }}</h3>
     </div>
     <div class="center">
-        <button id="secondButton" onclick="window.location.href='/newpage2'">New Question</button>
+        <button id="secondButton" onclick="window.location.href='/newpage3'">New Question</button>
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show the body once the DOM is fully loaded
+            document.body.style.display = 'block';
+        });
+
         document.getElementById('outputValuepython app.py').innerHTML = `{{ html_content|safe }}`;
-        window.onload = function() {
+
+
+         window.onload = function() {
             var targetElement = document.getElementById('outputValuepython app.py');
             var imageElement = document.getElementById('dynamicImage');
             var targetHeight = targetElement.offsetHeight;
             imageElement.style.height = targetHeight + 'px';
             imageElement.style.width = targetHeight + 'px';
         };
+
+
     </script>
 </body>
 </html>
