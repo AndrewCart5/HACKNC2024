@@ -2,13 +2,15 @@ from flask import Flask, render_template, request, redirect
 import os
 import traceback
 import ast
-import subprocess  # Importing subprocess module
+import subprocess
+from bs4 import BeautifulSoup  # Import BeautifulSoup for HTML linting
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='.')  # Set template folder to current directory
 
 # Directory for temporary files
 TEMP_DIR = "temp_code"
 os.makedirs(TEMP_DIR, exist_ok=True)
+
 
 # Helper functions for Python code analysis
 def check_syntax_python(code):
@@ -17,6 +19,7 @@ def check_syntax_python(code):
         return "No syntax errors detected."
     except SyntaxError as e:
         return f"Syntax Error at line {e.lineno}: {e.msg}"
+
 
 def lint_code_python(code):
     suggestions = []
@@ -32,12 +35,14 @@ def lint_code_python(code):
 
     return "\n".join(suggestions) if suggestions else "No linting issues detected."
 
+
 def check_runtime_python(code):
     try:
         exec(code, {'__builtins__': {'print': print}})
         return "No runtime errors detected."
     except Exception as e:
         return f"Runtime error: {traceback.format_exc()}"
+
 
 # Helper functions for Java code analysis
 def check_syntax_java(code):
@@ -49,6 +54,7 @@ def check_syntax_java(code):
     except subprocess.CalledProcessError as e:
         return f"Syntax Error: {e.stderr.decode()}"
 
+
 def lint_code_java(code):
     suggestions = []
     lines = code.splitlines()
@@ -57,6 +63,7 @@ def lint_code_java(code):
         if len(line) > 120:
             suggestions.append(f"Line {i}: Exceeds 120 characters.")
     return "\n".join(suggestions) if suggestions else "No linting issues detected."
+
 
 def check_runtime_java(code):
     try:
@@ -68,10 +75,51 @@ def check_runtime_java(code):
     except Exception as e:
         return f"Runtime error: {traceback.format_exc()}"
 
+
+# Helper functions for HTML code analysis
+def check_syntax_html(code):
+    try:
+        soup = BeautifulSoup(code, "html.parser")
+        return "No syntax errors detected in HTML." if soup else "HTML code may have syntax issues."
+    except Exception as e:
+        return f"HTML syntax error: {str(e)}"
+
+
+def lint_code_html(code):
+    suggestions = []
+    soup = BeautifulSoup(code, "html.parser")
+
+    # Check for missing <title> tag
+    if not soup.title:
+        suggestions.append("HTML is missing a <title> tag.")
+
+    # Check for header tags
+    if not any(soup.find(tag) for tag in ["h1", "h2", "h3", "h4", "h5", "h6"]):
+        suggestions.append("HTML is missing header tags (e.g., <h1>, <h2>).")
+
+    # Check for viewport meta tag
+    if not soup.find("meta", {"name": "viewport"}):
+        suggestions.append("HTML is missing a viewport meta tag for responsive design.")
+
+    # Check for missing alt attribute in <img> tags
+    for img in soup.find_all("img"):
+        if not img.get("alt"):
+            suggestions.append("Image tag is missing an 'alt' attribute.")
+
+    # Check for overly long lines
+    lines = code.splitlines()
+    for i, line in enumerate(lines, start=1):
+        if len(line) > 120:
+            suggestions.append(f"Line {i}: Exceeds 120 characters.")
+
+    return "\n".join(suggestions) if suggestions else "No linting issues detected in HTML."
+
+
 # Route to handle the root URL and redirect to Python by default
 @app.route("/", methods=["GET"])
 def home():
     return redirect("/python")  # Redirect to the default language (Python)
+
 
 # Route to handle different languages
 @app.route("/<language>", methods=["GET", "POST"])
@@ -90,8 +138,13 @@ def index(language="python"):
                 feedback["syntax"] = check_syntax_java(code)
                 feedback["lint"] = lint_code_java(code)
                 feedback["runtime"] = check_runtime_java(code)
+            elif language == "html":
+                feedback["syntax"] = check_syntax_html(code)
+                feedback["lint"] = lint_code_html(code)
+                feedback["runtime"] = "HTML does not support runtime checks."
 
     return render_template("index.html", feedback=feedback, code=code, language=language)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
