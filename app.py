@@ -52,7 +52,7 @@ def submit():
     user_input = request.form['textbox']
     # Save the value as a Python string variable
     Response = QuestionwithAnswer(user_input) #Save the value to be printed into the textbox
-    if numbercorrect == 1:
+    if numbercorrect == 10:
         numbercorrect = 0
         return render_template("10Correct.html")
     else:
