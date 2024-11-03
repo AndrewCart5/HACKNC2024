@@ -8,6 +8,86 @@ import google.generativeai as genai
 
 app = Flask(__name__)
 
+numbercorrect = 0
+ProgrammingLanguage = ""
+
+def log_request():
+
+    InitialPrompt = "Think of a a Question about the "+ProgrammingLanguage +" programming language with A,B, C, and D answer choices. Do not give me the answer"
+    genai.configure(api_key='AIzaSyCkZUdo1rRz3o56VPu_p1D0liR-clL_OiQ')
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    response = model.generate_content(InitialPrompt)
+    global InitialQuestion
+    InitialQuestion = response.text.strip()
+    return InitialQuestion
+
+def QuestionwithAnswer(userinput):
+    global numbercorrect
+    FinalPrompt = InitialQuestion + " Respond only with the correct character with no period after it."
+    genai.configure(api_key='AIzaSyCkZUdo1rRz3o56VPu_p1D0liR-clL_OiQ')
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    response2 = model.generate_content(FinalPrompt)
+    Answer = response2.text.strip()
+    if Answer == userinput.strip():
+        numbercorrect += 1
+
+        return "Correct!"   +"\nYou have "+ str(numbercorrect)+" correct"
+    else:
+        return "False! The correct answer is " + Answer +"\nYou have "+str(numbercorrect)+" correct"
+
+@app.route('/newpage2')
+def new_page2():
+
+    generated_string = log_request()
+    python_string = generated_string.replace("?","?<br>")
+    python_string = python_string.replace("A.","<br>A.")
+    python_string = python_string.replace("B.","<br>B.")
+    python_string = python_string.replace("C.","<br>C.")
+    python_string = python_string.replace("D.","<br>D.")
+    return render_template('Question.html', generated_string=generated_string,html_content = python_string)
+
+@app.route('/submit', methods=['POST'])
+def submit():
+    global numbercorrect
+    user_input = request.form['textbox']
+    # Save the value as a Python string variable
+    Response = QuestionwithAnswer(user_input) #Save the value to be printed into the textbox
+    if numbercorrect == 1:
+        numbercorrect = 0
+        return render_template("10Correct.html")
+    else:
+        return render_template("Question.html", InformUser=Response)
+
+
+
+@app.route('/new_page')
+def new_page():
+    return render_template('Question.html')
+
+@app.route('/set_value/<string:value>')
+def set_value(value):
+    global ProgrammingLanguage
+    global Planet
+    Planet = value
+    if Planet == "Earth":
+        ProgrammingLanguage = "Python"
+    elif Planet == "Moon":
+        ProgrammingLanguage = "Java"
+    elif  Planet == "Mars":
+        ProgrammingLanguage = "C#"
+    elif Planet == "Neptune":
+        ProgrammingLanguage = "C++"
+    elif Planet == "Saturn":
+        ProgrammingLanguage = "JavaScript"
+    else:
+        ProgrammingLanguage = "HTML"
+
+
+
+    return render_template('Prompt.html', value=Planet, ProgrammingLanguage=ProgrammingLanguage)
+
+
+
 TEMP_DIR = "temp_code"
 os.makedirs(TEMP_DIR, exist_ok=True)
 
