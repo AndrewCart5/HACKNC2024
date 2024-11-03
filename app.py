@@ -1,8 +1,8 @@
-from flask import Flask, render_template, request
-import subprocess
+from flask import Flask, render_template, request, redirect
 import os
 import traceback
 import ast
+import subprocess  # Importing subprocess module
 
 app = Flask(__name__)
 
@@ -41,171 +41,57 @@ def check_runtime_python(code):
 
 # Helper functions for Java code analysis
 def check_syntax_java(code):
-    file_path = os.path.join(TEMP_DIR, "TempCode.java")
-    with open(file_path, "w") as file:
-        file.write(code)
-
     try:
-        result = subprocess.run(["javac", file_path], capture_output=True, text=True)
-        if result.returncode == 0:
-            return "No syntax errors detected."
-        return result.stderr
-    except Exception as e:
-        return str(e)
+        with open("temp_code/Test.java", "w") as f:
+            f.write(code)
+        subprocess.run(["javac", "temp_code/Test.java"], check=True)
+        return "No syntax errors detected."
+    except subprocess.CalledProcessError as e:
+        return f"Syntax Error: {e.stderr.decode()}"
 
 def lint_code_java(code):
-    file_path = os.path.join(TEMP_DIR, "TempCode.java")
-    with open(file_path, "w") as file:
-        file.write(code)
+    suggestions = []
+    lines = code.splitlines()
 
-    # Assuming Checkstyle is installed, specify the rules XML file location
-    checkstyle_jar = "/path/to/checkstyle.jar"  # Update with your path
-    checkstyle_config = "/path/to/checkstyle.xml"  # Update with your path
-    try:
-        result = subprocess.run(
-            ["java", "-jar", checkstyle_jar, "-c", checkstyle_config, file_path],
-            capture_output=True, text=True
-        )
-        return result.stdout if result.returncode == 0 else result.stderr
-    except Exception as e:
-        return str(e)
+    for i, line in enumerate(lines, start=1):
+        if len(line) > 120:
+            suggestions.append(f"Line {i}: Exceeds 120 characters.")
+    return "\n".join(suggestions) if suggestions else "No linting issues detected."
 
 def check_runtime_java(code):
-    file_path = os.path.join(TEMP_DIR, "TempCode.java")
-    class_file = os.path.join(TEMP_DIR, "TempCode")
-    with open(file_path, "w") as file:
-        file.write(code)
-
     try:
-        # Compile Java code
-        compile_result = subprocess.run(["javac", file_path], capture_output=True, text=True)
-        if compile_result.returncode != 0:
-            return compile_result.stderr
-
-        # Execute Java class
-        run_result = subprocess.run(["java", "-cp", TEMP_DIR, "TempCode"], capture_output=True, text=True)
-        return run_result.stdout if run_result.returncode == 0 else run_result.stderr
+        with open("temp_code/Test.java", "w") as f:
+            f.write(code)
+        subprocess.run(["javac", "temp_code/Test.java"], check=True)
+        result = subprocess.run(["java", "-cp", "temp_code", "Test"], capture_output=True, text=True)
+        return result.stdout if result.returncode == 0 else f"Runtime error: {result.stderr}"
     except Exception as e:
-        return str(e)
+        return f"Runtime error: {traceback.format_exc()}"
 
-# Helper functions for C# code analysis
-def check_syntax_csharp(code):
-    file_path = os.path.join(TEMP_DIR, "TempCode.cs")
-    with open(file_path, "w") as file:
-        file.write(code)
+# Route to handle the root URL and redirect to Python by default
+@app.route("/", methods=["GET"])
+def home():
+    return redirect("/python")  # Redirect to the default language (Python)
 
-    try:
-        result = subprocess.run(["csc", file_path], capture_output=True, text=True)
-        if result.returncode == 0:
-            return "No syntax errors detected."
-        return result.stderr
-    except Exception as e:
-        return str(e)
-
-def check_runtime_csharp(code):
-    file_path = os.path.join(TEMP_DIR, "TempCode.cs")
-    with open(file_path, "w") as file:
-        file.write(code)
-
-    try:
-        compile_result = subprocess.run(["csc", file_path], capture_output=True, text=True)
-        if compile_result.returncode != 0:
-            return compile_result.stderr
-
-        run_result = subprocess.run(["mono", os.path.join(TEMP_DIR, "TempCode.exe")], capture_output=True, text=True)
-        return run_result.stdout if run_result.returncode == 0 else run_result.stderr
-    except Exception as e:
-        return str(e)
-
-# Helper functions for C++ code analysis
-def check_syntax_cpp(code):
-    file_path = os.path.join(TEMP_DIR, "TempCode.cpp")
-    with open(file_path, "w") as file:
-        file.write(code)
-
-    try:
-        result = subprocess.run(["g++", "-fsyntax-only", file_path], capture_output=True, text=True)
-        if result.returncode == 0:
-            return "No syntax errors detected."
-        return result.stderr
-    except Exception as e:
-        return str(e)
-
-def check_runtime_cpp(code):
-    file_path = os.path.join(TEMP_DIR, "TempCode.cpp")
-    with open(file_path, "w") as file:
-        file.write(code)
-
-    try:
-        compile_result = subprocess.run(["g++", file_path, "-o", os.path.join(TEMP_DIR, "TempCode")], capture_output=True, text=True)
-        if compile_result.returncode != 0:
-            return compile_result.stderr
-
-        run_result = subprocess.run([os.path.join(TEMP_DIR, "TempCode")], capture_output=True, text=True)
-        return run_result.stdout if run_result.returncode == 0 else run_result.stderr
-    except Exception as e:
-        return str(e)
-
-# Helper functions for JavaScript code analysis
-def check_syntax_javascript(code):
-    # Use Node.js to check for syntax errors
-    file_path = os.path.join(TEMP_DIR, "TempCode.js")
-    with open(file_path, "w") as file:
-        file.write(code)
-
-    try:
-        result = subprocess.run(["node", "--check", file_path], capture_output=True, text=True)
-        if result.returncode == 0:
-            return "No syntax errors detected."
-        return result.stderr
-    except Exception as e:
-        return str(e)
-
-def check_runtime_javascript(code):
-    file_path = os.path.join(TEMP_DIR, "TempCode.js")
-    with open(file_path, "w") as file:
-        file.write(code)
-
-    try:
-        run_result = subprocess.run(["node", file_path], capture_output=True, text=True)
-        return run_result.stdout if run_result.returncode == 0 else run_result.stderr
-    except Exception as e:
-        return str(e)
-
-# Flask route for the homepage
-@app.route("/", methods=["GET", "POST"])
-def index():
-    feedback = {
-        "syntax": "",
-        "lint": "",
-        "runtime": ""
-    }
+# Route to handle different languages
+@app.route("/<language>", methods=["GET", "POST"])
+def index(language="python"):
+    feedback = {"syntax": "", "lint": "", "runtime": ""}
     code = ""
-    language = "python"
 
     if request.method == "POST":
         code = request.form["code"]
-        language = request.form["language"]
+        if code.strip():  # Check if there is any code input
+            if language == "python":
+                feedback["syntax"] = check_syntax_python(code)
+                feedback["lint"] = lint_code_python(code)
+                feedback["runtime"] = check_runtime_python(code)
+            elif language == "java":
+                feedback["syntax"] = check_syntax_java(code)
+                feedback["lint"] = lint_code_java(code)
+                feedback["runtime"] = check_runtime_java(code)
 
-        if language == "python":
-            feedback["syntax"] = check_syntax_python(code)
-            feedback["lint"] = lint_code_python(code)
-            feedback["runtime"] = check_runtime_python(code)
-        elif language == "java":
-            feedback["syntax"] = check_syntax_java(code)
-            feedback["lint"] = lint_code_java(code)
-            feedback["runtime"] = check_runtime_java(code)
-        elif language == "csharp":
-            feedback["syntax"] = check_syntax_csharp(code)
-            feedback["runtime"] = check_runtime_csharp(code)
-        elif language == "cpp":
-            feedback["syntax"] = check_syntax_cpp(code)
-            feedback["runtime"] = check_runtime_cpp(code)
-        elif language == "javascript":
-            feedback["syntax"] = check_syntax_javascript(code)
-            feedback["runtime"] = check_runtime_javascript(code)
-
-    return render_template("indexTesting.html", feedback=feedback, code=code, language=language)
+    return render_template("index.html", feedback=feedback, code=code, language=language)
 
 if __name__ == "__main__":
     app.run(debug=True)
