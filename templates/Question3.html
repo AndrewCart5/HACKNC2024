@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Overlay</title>
     <style>
+
         body{
             display:none;
         }
@@ -73,37 +74,30 @@
             height: 100vh; /* Full height to center vertically as well */
         }
 
+
+
     </style>
 
 </head>
 <body>
     <div class="container">
-        <img src="{{ url_for('static', filename='images/Astronaut.jpg') }}" alt="Image 1" class="image1" id="dynamicImage">
+        <img src="{{ url_for('static', filename='images/floating.jpg') }}" alt="Image 1" class="image1" id="dynamicImage">
         <div class="text-box" id="outputValuepython app.py">
-
+              <h3 id="answercontainer">{{ InformUser }}</h3>
         </div>
     </div>
-    <div class="textbox-container">
-        <form id="inputForm" method="POST" action="/submit" onSubmit="return hideElements()">
-            <textarea class="textbox" name="textbox" rows="4" placeholder="Enter your text here..."></textarea>
-            <br>
-            <button type="submit" class="button" >Answer</button>
-        </form>
-    </div>
-    <div class="answer-container" id="answerContainer">
-        <h3>{{ InformUser }}</h3>
-    </div>
+
+
     <div class="center">
-        <button id="secondButton" onclick="window.location.href='/newpage3'">New Question</button>
+        <button id="secondButton" onclick="window.location.href='/newpage2'">New Question</button>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
             // Show the body once the DOM is fully loaded
             document.body.style.display = 'block';
         });
 
-        document.getElementById('outputValuepython app.py').innerHTML = `{{ html_content|safe }}`;
 
 
          window.onload = function() {

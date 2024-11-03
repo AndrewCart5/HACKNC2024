@@ -56,7 +56,7 @@ def submit():
         numbercorrect = 0
         return render_template("10Correct.html")
     else:
-        return render_template("Question.html", InformUser=Response)
+        return render_template("Question3.html", InformUser=Response)
 
 
 
