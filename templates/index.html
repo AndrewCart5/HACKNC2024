@@ -5,14 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rubber Duck AI - Code Debugging Assistant</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
+        body { font-family: Arial, sans-serif; margin: 20px; position: relative; }
         .language-switch { margin-bottom: 20px; }
         textarea { width: 100%; height: 200px; }
         pre { background: #f4f4f4; padding: 10px; border: 1px solid #ddd; }
+        /* Style for the rubber duck image */
+        .duck-image {
+            position: absolute;
+            top: 20px; /* Adjust as needed */
+            right: 20px; /* Adjust as needed */
+            width: 100px; /* Set the width of the image */
+            height: auto; /* Maintain aspect ratio */
+        }
     </style>
 </head>
 <body>
     <h1>Rubber Duck AI - Code Debugging Assistant</h1>
+    <img src="path/to/your/rubber_duck.png" alt="Rubber Duck" class="duck-image">
+    <button id="quiz button" onclick="window.location.href='/quiz'">Coding Quiz - Test Your Knowledge</button>
     <div class="language-switch">
         <a href="/python">Python</a>
         <a href="/java">Java</a>
@@ -29,4 +39,6 @@
     <h3>Linting Suggestions:</h3>
     <pre>{{ feedback['lint'] }}</pre>
     <h3>Runtime Output:</h3>
-    <pre>{{ feedback['runtime'] }}</pre
+    <pre>{{ feedback['runtime'] }}</pre>
+</body>
+</html>

@@ -15,4 +15,3 @@ public class Test {
         return a / b; // Division by zero if b is 0
     }
 }
-

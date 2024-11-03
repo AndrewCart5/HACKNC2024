@@ -11,6 +11,10 @@ app = Flask(__name__)
 numbercorrect = 0
 ProgrammingLanguage = ""
 
+@app.route('/quiz')
+def quiz():
+    return render_template('index2.html')
+
 def log_request():
 
     InitialPrompt = "Think of a a Question about the "+ProgrammingLanguage +" programming language with A,B, C, and D answer choices. Do not give me the answer"
@@ -58,8 +62,6 @@ def submit():
     else:
         return render_template("Question3.html", InformUser=Response)
 
-
-
 @app.route('/new_page')
 def new_page():
     return render_template('Question.html')
@@ -82,17 +84,9 @@ def set_value(value):
     else:
         ProgrammingLanguage = "HTML"
     return render_template('Prompt.html', value=Planet, ProgrammingLanguage=ProgrammingLanguage)
-    
-
-
-
-    
-
-
 
 TEMP_DIR = "temp_code"
 os.makedirs(TEMP_DIR, exist_ok=True)
-
 
 def check_syntax_html(code):
     try:
@@ -111,7 +105,6 @@ def check_syntax_html(code):
     except Exception as e:
         return f"Syntax Error: {str(e)}"
 
-
 def lint_code_html(code):
     suggestions = []
     lines = code.splitlines()
@@ -126,7 +119,6 @@ def lint_code_html(code):
 
     return "\n".join(suggestions) if suggestions else "No linting issues detected."
 
-
 # Python code analysis
 def check_syntax_python(code):
     try:
@@ -134,7 +126,6 @@ def check_syntax_python(code):
         return "No syntax errors detected."
     except SyntaxError as e:
         return f"Syntax Error at line {e.lineno}: {e.msg}"
-
 
 def lint_code_python(code):
     suggestions = []
@@ -150,14 +141,12 @@ def lint_code_python(code):
 
     return "\n".join(suggestions) if suggestions else "No linting issues detected."
 
-
 def check_runtime_python(code):
     try:
         exec(code, {'__builtins__': {'print': print}})
         return "No runtime errors detected."
     except Exception as e:
         return f"Runtime error: {traceback.format_exc()}"
-
 
 # Java code analysis
 def check_syntax_java(code):
@@ -169,7 +158,6 @@ def check_syntax_java(code):
     except subprocess.CalledProcessError as e:
         error_message = e.stderr.decode() if e.stderr else "Compilation failed without error message."
         return f"Syntax Error: {error_message}"
-
 
 def lint_code_java(code):
     suggestions = []
@@ -185,7 +173,6 @@ def lint_code_java(code):
             suggestions.append(f"Line {i}: Consider checking for division by zero before calling divide().")
 
     return "\n".join(suggestions) if suggestions else "No linting issues detected."
-
 
 def check_runtime_java(code):
     try:
@@ -238,7 +225,6 @@ def check_runtime_javascript(code):
 def home():
     return redirect("/python")
 
-
 # Route to handle different languages
 @app.route("/<language>", methods=["GET", "POST"])
 def index(language="python"):
@@ -266,7 +252,7 @@ def index(language="python"):
                 feedback["runtime"] = check_runtime_javascript(code)
 
     return render_template("index.html", feedback=feedback, code=code, language=language)
-    
+
 
 
 if __name__ == "__main__":
